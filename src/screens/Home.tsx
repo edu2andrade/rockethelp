@@ -5,19 +5,43 @@ import {
   useTheme,
   Text,
   Heading,
+  FlatList,
+  Center,
 } from "native-base";
+
+import { useNavigation } from "@react-navigation/native";
+
 import { Feather } from "@expo/vector-icons";
 
 import Logo from "../assets/logo_secondary.svg";
 import { Filter } from "../components/Filter";
 import { useState } from "react";
+import { Orders, OrdersProps } from "../components/Orders";
+import { Button } from "../components/Button";
 
 export function Home() {
   const [statusSelected, setStatusSelected] = useState<"open" | "closed">(
     "open"
   );
+  const [orders, setOrders] = useState<OrdersProps[]>([
+    {
+      id: "789",
+      patrimony: "123456",
+      when: "22/07/2022 às 17:12",
+      status: "open",
+    },
+  ]);
 
   const { colors } = useTheme();
+  const navigation = useNavigation();
+
+  function handleNewOrder() {
+    navigation.navigate("new");
+  }
+
+  function handleOpenDetails(orderId: string) {
+    navigation.navigate("details", { orderId });
+  }
 
   return (
     <VStack flex={1} pb={6} bg="gray.700">
@@ -45,7 +69,7 @@ export function Home() {
           alignItems="center"
         >
           <Heading color="gray.100">Entries</Heading>
-          <Text color="gray.200">5</Text>
+          <Text color="gray.200">{orders.length}</Text>
         </HStack>
         <HStack space={3} mb={8}>
           <Filter
@@ -61,6 +85,34 @@ export function Home() {
             isActive={statusSelected === "closed"}
           />
         </HStack>
+        <FlatList
+          data={orders}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Orders data={item} onPress={() => handleOpenDetails(item.id)} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          ListEmptyComponent={() => (
+            <Center>
+              <IconButton
+                icon={
+                  <Feather
+                    name="message-circle"
+                    size={40}
+                    color={colors.gray[300]}
+                  />
+                }
+              />
+              <Text color="gray.300" fontSize="xl" mt={4} textAlign="center">
+                You don't have {"\n"}
+                any {statusSelected === "open" ? "open" : "closed"} calls
+              </Text>
+            </Center>
+          )}
+        ></FlatList>
+
+        <Button title="New entry" onPress={handleNewOrder} />
       </VStack>
     </VStack>
   );
