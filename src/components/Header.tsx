@@ -8,9 +8,9 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-interface HeaderProps extends StyledProps {
+type HeaderProps = StyledProps & {
   title: string;
-}
+};
 
 export function Header({ title, ...rest }: HeaderProps) {
   const { colors } = useTheme();

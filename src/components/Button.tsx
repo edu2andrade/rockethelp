@@ -1,8 +1,8 @@
 import { Button as ButtonNativeBase, IButtonProps, Heading } from "native-base";
 
-interface ButtonProps extends IButtonProps {
+type ButtonProps = IButtonProps & {
   title: string;
-}
+};
 export function Button({ title, ...rest }: ButtonProps) {
   return (
     <ButtonNativeBase

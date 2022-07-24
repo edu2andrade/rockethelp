@@ -1,10 +1,10 @@
 import { Text, Button, IButtonProps, useTheme } from "native-base";
 
-interface FilterProps extends IButtonProps {
+type FilterProps = IButtonProps & {
   title: string;
   isActive?: boolean;
   type: "open" | "closed";
-}
+};
 
 export function Filter({
   title,
