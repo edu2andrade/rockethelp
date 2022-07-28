@@ -22,6 +22,7 @@ export const SignIn = () => {
       );
     }
     setIsLoading(true);
+    // Firebase auth:
     auth()
       .signInWithEmailAndPassword(email, password)
       .catch((error) => {

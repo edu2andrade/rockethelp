@@ -1,3 +1,9 @@
+import { useState } from "react";
+
+import auth from "@react-native-firebase/auth";
+
+import { Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import {
   HStack,
   IconButton,
@@ -9,13 +15,10 @@ import {
   Center,
 } from "native-base";
 
-import { useNavigation } from "@react-navigation/native";
-
 import { Feather } from "@expo/vector-icons";
 
 import Logo from "../assets/logo_secondary.svg";
 import { Filter } from "../components/Filter";
-import { useState } from "react";
 import { Orders, OrdersProps } from "../components/Orders";
 import { Button } from "../components/Button";
 
@@ -43,6 +46,15 @@ export function Home() {
     navigation.navigate("details", { orderId });
   }
 
+  function handleLogout() {
+    auth()
+      .signOut()
+      .catch((error) => {
+        console.log(error);
+        Alert.alert("Logout error:", "Sorry, we can't log out right now...");
+      });
+  }
+
   return (
     <VStack flex={1} pb={6} bg="gray.700">
       <HStack
@@ -56,7 +68,14 @@ export function Home() {
       >
         <Logo />
         <IconButton
-          icon={<Feather name="log-out" size={20} color={colors.gray[300]} />}
+          icon={
+            <Feather
+              name="log-out"
+              size={20}
+              color={colors.gray[300]}
+              onPress={handleLogout}
+            />
+          }
         />
       </HStack>
 
