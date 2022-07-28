@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 import { Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -21,19 +22,15 @@ import Logo from "../assets/logo_secondary.svg";
 import { Filter } from "../components/Filter";
 import { Orders, OrdersProps } from "../components/Orders";
 import { Button } from "../components/Button";
+import { Loading } from "../components/Loading";
+import { dateFormat } from "../utils/firestoreDateFormat";
 
 export function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [statusSelected, setStatusSelected] = useState<"open" | "closed">(
     "open"
   );
-  const [orders, setOrders] = useState<OrdersProps[]>([
-    {
-      id: "789",
-      patrimony: "123456",
-      when: "22/07/2022 às 17:12",
-      status: "open",
-    },
-  ]);
+  const [orders, setOrders] = useState<OrdersProps[]>([]);
 
   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -54,6 +51,31 @@ export function Home() {
         Alert.alert("Logout error:", "Sorry, we can't log out right now...");
       });
   }
+
+  useEffect(() => {
+    setIsLoading(true);
+    const subscriber = firestore()
+      .collection("orders")
+      .where("status", "==", statusSelected)
+      .onSnapshot((snapshot) => {
+        const data = snapshot.docs.map((doc) => {
+          const { patrimony, description, status, created_at } = doc.data();
+
+          return {
+            id: doc.id,
+            patrimony,
+            description,
+            status,
+            when: dateFormat(created_at),
+          };
+        });
+
+        setOrders(data);
+        setIsLoading(false);
+      });
+
+    return subscriber;
+  }, [statusSelected]);
 
   return (
     <VStack flex={1} pb={6} bg="gray.700">
@@ -104,32 +126,36 @@ export function Home() {
             isActive={statusSelected === "closed"}
           />
         </HStack>
-        <FlatList
-          data={orders}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Orders data={item} onPress={() => handleOpenDetails(item.id)} />
-          )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          ListEmptyComponent={() => (
-            <Center>
-              <IconButton
-                icon={
-                  <Feather
-                    name="message-circle"
-                    size={40}
-                    color={colors.gray[300]}
-                  />
-                }
-              />
-              <Text color="gray.300" fontSize="xl" mt={4} textAlign="center">
-                You don't have {"\n"}
-                any {statusSelected === "open" ? "open" : "closed"} calls
-              </Text>
-            </Center>
-          )}
-        ></FlatList>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <FlatList
+            data={orders}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Orders data={item} onPress={() => handleOpenDetails(item.id)} />
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            ListEmptyComponent={() => (
+              <Center>
+                <IconButton
+                  icon={
+                    <Feather
+                      name="message-circle"
+                      size={40}
+                      color={colors.gray[300]}
+                    />
+                  }
+                />
+                <Text color="gray.300" fontSize="xl" mt={4} textAlign="center">
+                  You don't have {"\n"}
+                  any {statusSelected === "open" ? "open" : "closed"} calls
+                </Text>
+              </Center>
+            )}
+          />
+        )}
 
         <Button title="New entry" onPress={handleNewOrder} />
       </VStack>
