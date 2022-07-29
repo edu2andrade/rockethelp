@@ -47,7 +47,7 @@ export function Register() {
 
   return (
     <VStack flex={1} p={6} bg="gray.600">
-      <Header title="New entry" />
+      <Header title="New Order" />
       <Input placeholder="Object ref:" mt={4} onChangeText={setPatrimony} />
       <Input
         placeholder="Problem description"

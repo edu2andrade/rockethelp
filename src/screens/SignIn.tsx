@@ -1,18 +1,21 @@
 import { useState } from "react";
 import auth from "@react-native-firebase/auth";
 
-import { VStack, Heading, Icon } from "native-base";
-import Logo from "../assets/logo_primary.svg";
-import { FontAwesome } from "@expo/vector-icons";
-import { Input } from "../components/Input";
-import { Button } from "../components/Button";
+import { VStack, Heading, Icon, useTheme } from "native-base";
 import { Alert } from "react-native";
 
-// Components starts with capital letters
+import Logo from "../assets/logo_primary.svg";
+import { Envelope, Key } from "phosphor-react-native";
+
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
+
 export const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { colors } = useTheme();
 
   const handleSignIn = () => {
     if (!email || !password) {
@@ -53,13 +56,15 @@ export const SignIn = () => {
       <Input
         mb={4}
         placeholder="E-mail"
-        InputLeftElement={<Icon as={<FontAwesome name="envelope" />} ml="4" />}
+        InputLeftElement={
+          <Icon as={<Envelope color={colors.gray[300]} />} ml="4" />
+        }
         onChangeText={setEmail}
       />
       <Input
         mb={8}
         placeholder="Password"
-        InputLeftElement={<Icon as={<FontAwesome name="key" />} ml="4" />}
+        InputLeftElement={<Icon as={<Key color={colors.gray[300]} />} ml="4" />}
         onChangeText={setPassword}
         secureTextEntry
       />

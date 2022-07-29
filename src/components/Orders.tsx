@@ -2,14 +2,13 @@ import {
   Box,
   Circle,
   HStack,
-  Icon,
   Text,
   useTheme,
   VStack,
   Pressable,
   IPressableProps,
 } from "native-base";
-import { Feather } from "@expo/vector-icons";
+import { CircleWavyCheck, Hourglass, Clock } from "phosphor-react-native";
 
 export type OrdersProps = {
   id: string;
@@ -44,11 +43,7 @@ export function Orders({ data, ...rest }: Props) {
             Object Ref: {data.patrimony}
           </Text>
           <HStack alignItems="center">
-            <Icon
-              as={<Feather name="clock" />}
-              size={3}
-              color={colors.gray[200]}
-            />
+            <Clock size={16} color={colors.gray[200]} />
             <Text color="gray.200" ml={1}>
               {data.when}
             </Text>
@@ -56,17 +51,9 @@ export function Orders({ data, ...rest }: Props) {
         </VStack>
         <Circle bg="gray.500" h={12} w={12} mr={5}>
           {data.status === "closed" ? (
-            <Icon
-              as={<Feather name="check-circle" />}
-              size={6}
-              color={statusColor}
-            />
+            <CircleWavyCheck size={24} color={statusColor} />
           ) : (
-            <Icon
-              as={<Feather name="refresh-cw" />}
-              size={6}
-              color={statusColor}
-            />
+            <Hourglass size={24} color={statusColor} />
           )}
         </Circle>
       </HStack>

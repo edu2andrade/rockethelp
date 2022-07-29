@@ -16,7 +16,7 @@ import {
   Center,
 } from "native-base";
 
-import { Feather } from "@expo/vector-icons";
+import { SignOut, ChatCircleText } from "phosphor-react-native";
 
 import Logo from "../assets/logo_secondary.svg";
 import { Filter } from "../components/Filter";
@@ -90,14 +90,8 @@ export function Home() {
       >
         <Logo />
         <IconButton
-          icon={
-            <Feather
-              name="log-out"
-              size={20}
-              color={colors.gray[300]}
-              onPress={handleLogout}
-            />
-          }
+          icon={<SignOut size={20} color={colors.gray[300]} />}
+          onPress={handleLogout}
         />
       </HStack>
 
@@ -109,7 +103,7 @@ export function Home() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Heading color="gray.100">Entries</Heading>
+          <Heading color="gray.100">Orders</Heading>
           <Text color="gray.200">{orders.length}</Text>
         </HStack>
         <HStack space={3} mb={8}>
@@ -140,24 +134,18 @@ export function Home() {
             ListEmptyComponent={() => (
               <Center>
                 <IconButton
-                  icon={
-                    <Feather
-                      name="message-circle"
-                      size={40}
-                      color={colors.gray[300]}
-                    />
-                  }
+                  icon={<ChatCircleText size={40} color={colors.gray[300]} />}
                 />
                 <Text color="gray.300" fontSize="xl" mt={4} textAlign="center">
                   You don't have {"\n"}
-                  any {statusSelected === "open" ? "open" : "closed"} calls
+                  any {statusSelected === "open" ? "open" : "closed"} orders.
                 </Text>
               </Center>
             )}
           />
         )}
 
-        <Button title="New entry" onPress={handleNewOrder} />
+        <Button title="New Order" onPress={handleNewOrder} />
       </VStack>
     </VStack>
   );
